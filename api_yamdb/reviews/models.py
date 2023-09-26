@@ -26,38 +26,38 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name="Произведение",
     )
+    text = models.TextField(max_length=200)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name="Автор отзыва",
     )
-    text = models.TextField(max_length=200)
-    rating = models.PositiveSmallIntegerField(
+    score = models.PositiveSmallIntegerField(
         on_delete=models.CASCADE,
         validators=[MinValueValidator(1), MaxValueValidator(10)],
         related_name='reviews',
         help_text="Оцените произведение по шкале от 1 до 10.",
     )
-    created = models.DateTimeField(
+    pub_date = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
-        verbose_name='Дата добавления', 
+        verbose_name='Дата добавления',
     )
 
     class Meta:
-        unique_together = ('title', 'rating')
+        unique_together = ('title', 'score')
 
 
 class Comment(models.Model):
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name='comments'
     )
+    text = models.TextField(max_length=200)
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments'
     )
-    text = models.TextField(max_length=200)
-    created = models.DateTimeField(
+    pub_date = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
         verbose_name='Дата добавления',
