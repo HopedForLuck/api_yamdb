@@ -29,3 +29,11 @@ class TitleViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return TitleSafeSerializer
         return TitleNotSafeSerializer
+
+
+class ReviewViewSet(ModelViewSet):
+    pass
+
+
+class CommentViewSet(ModelViewSet):
+    pass

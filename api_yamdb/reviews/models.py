@@ -4,6 +4,11 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+
+def current_year():
+    return datetime.date.today().year
+
+
 User = get_user_model()
 
 
@@ -73,17 +78,18 @@ class Title(models.Model):
             )
         ],
     )
-    description = models.TextField(
-        verbose_name='описание',
-        blank=True
-    )
-    genre = models.ManyToManyField(
-        Genre,
-        through='GenreTitle',
-        related_name='titles',
-        verbose_name='Жанр'
+    # этих полей нет в title.csv
+    # description = models.TextField(
+    #     verbose_name='описание',
+    #     blank=True
+    # )
+    # genre = models.ManyToManyField(
+    #     Genre,
+    #     through='GenreTitle',
+    #     related_name='titles',
+    #     verbose_name='Жанр'
 
-    )
+    # )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
@@ -122,3 +128,43 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return f'{self.title} относится к следующему(им) жанру(ам): {self.genre}'
+
+
+class Review(models.Model):
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name="Произведение",
+    )
+    text = models.TextField(max_length=200)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name="Автор отзыва",
+    )
+    score = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        help_text="Оцените произведение по шкале от 1 до 10.",
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        verbose_name='Дата добавления',
+    )
+
+
+class Comment(models.Model):
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, related_name='comments'
+    )
+    text = models.TextField(max_length=200)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='comments'
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        verbose_name='Дата добавления',
+    )
