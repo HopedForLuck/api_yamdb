@@ -42,6 +42,7 @@ class Genre(models.Model):
         max_length=75,
         unique=True,
         verbose_name='Hазвание',
+        db_index=True
     )
     slug = models.SlugField(
         max_length=50,
@@ -78,18 +79,18 @@ class Title(models.Model):
             )
         ],
     )
-    # этих полей нет в title.csv
-    # description = models.TextField(
-    #     verbose_name='описание',
-    #     blank=True
-    # )
-    # genre = models.ManyToManyField(
-    #     Genre,
-    #     through='GenreTitle',
-    #     related_name='titles',
-    #     verbose_name='Жанр'
-
-    # )
+    description = models.TextField(
+        verbose_name='Описание',
+        blank=True
+    )
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.SET_NULL,
+        # through='GenreTitle',
+        related_name='titles',
+        verbose_name='Жанр',
+        null=True
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
@@ -104,7 +105,7 @@ class Title(models.Model):
         ordering = ('name', )
 
     def __str__(self):
-        return self.name
+        return self.name[:10]
 
 
 class GenreTitle(models.Model):
@@ -145,14 +146,29 @@ class Review(models.Model):
         verbose_name="Автор отзыва",
     )
     score = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)],
+        validators=[
+            MinValueValidator(1), MaxValueValidator(10)
+        ],
         help_text="Оцените произведение по шкале от 1 до 10.",
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
         db_index=True,
-        verbose_name='Дата добавления',
+        verbose_name='Дата публикации',
     )
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        constraints = (
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='unique_author_title'
+            ),
+        )
+
+    def __str__(self):
+        return self.text[:10]
 
 
 class Comment(models.Model):
@@ -168,3 +184,10 @@ class Comment(models.Model):
         db_index=True,
         verbose_name='Дата добавления',
     )
+
+    class Meta:
+        verbose_name = 'Коментарий'
+        verbose_name_plural = 'Коментарии'
+
+    def __str__(self):
+        return self.review[:10]

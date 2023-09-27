@@ -24,7 +24,7 @@ class TitleAdmin(admin.ModelAdmin):
         "category",
     )
     search_fields = ("name",)
-    list_filter = ("category",)
+    list_filter = ("category", "genre",)
     list_display_links = ("name",)
 
 
