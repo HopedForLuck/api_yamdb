@@ -40,8 +40,8 @@ class ReviewViewSet(ModelViewSet):
     # permission_classes = (IsAuthorOrReadOnly,)
     # pagination_class = LimitOffsetPagination
 
-    # def perform_create(self, serializer):
-    #     serializer.save(author=self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class CommentViewSet(ModelViewSet):
