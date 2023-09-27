@@ -51,23 +51,20 @@ class TitleNotSafeSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field="username",
+    author = serializers.StringRelatedField(
         read_only=True,
-        default=serializers.CurrentUserDefault())
+    )
 
     class Meta:
         model = Review
-        fields = "__all__"
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(
-        slug_field="username",
-        read_only=True,
-        default=serializers.CurrentUserDefault())
+    author = serializers.StringRelatedField(
+        read_only=True,)
 
     class Meta:
         model = Comment
-        fields = "__all__"
-        read_only_fields = ("author", "title",)
+        fields = ('id', 'text', 'author', 'pub_date')
+        # read_only_fields = ("author", "title",)
