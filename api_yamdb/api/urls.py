@@ -5,7 +5,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,)
 
-from .views import TitleViewSet, GenreViewSet, CommentViewSet, ReviewViewSet, CategoryViewSet
+from .views import (TitleViewSet, GenreViewSet,
+                    CommentViewSet, ReviewViewSet, CategoryViewSet)
 
 router = routers.DefaultRouter()
 router.register('categories', CategoryViewSet, basename='categories')
@@ -21,11 +22,11 @@ router.register(
     basename="comments")
 
 urlpatterns = [
-    path("api/v1/", include(router.urls)),
-    path('auth/signup/',
-         TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/v1/jwt/refresh/',
-    #      TokenRefreshView.as_view(), name='token_refresh'),
+    path("", include(router.urls)),
     path('auth/token/',
+         TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('auth/two/',
+         TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/signup/',
          TokenVerifyView.as_view(), name='token_verify'),
 ]

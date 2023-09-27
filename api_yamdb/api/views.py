@@ -1,8 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
+from reviews.models import Category, Comment, Genre, Review, Title
 
-from reviews.models import Category, Genre, Title
 from .mixins import CreateListDestroyViewSet
-from .serializers import CategorySerializer, GenreSerializer, TitleNotSafeSerializer, TitleSafeSerializer
+from .serializers import (CategorySerializer, GenreSerializer,
+                          TitleNotSafeSerializer, TitleSafeSerializer,
+                          ReviewSerializer, CommentSerializer)
 
 
 class CategoryViewSet(CreateListDestroyViewSet):
@@ -32,8 +35,23 @@ class TitleViewSet(ModelViewSet):
 
 
 class ReviewViewSet(ModelViewSet):
-    pass
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    # permission_classes = (IsAuthorOrReadOnly,)
+    # pagination_class = LimitOffsetPagination
+
+    # def perform_create(self, serializer):
+    #     serializer.save(author=self.request.user)
 
 
 class CommentViewSet(ModelViewSet):
-    pass
+    serializer_class = CommentSerializer
+    # permission_classes = (IsAuthorOrReadOnly,)
+
+    def get_queryset(self):
+        review = get_object_or_404(Review, id=self.kwargs.get("review_id"))
+        return review.comments.all()
+
+    def perform_create(self, serializer):
+        review = get_object_or_404(Review, id=self.kwargs.get("review_id"))
+        serializer.save(author=self.request.user, review=review)

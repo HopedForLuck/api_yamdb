@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'reviews',
-    'api'
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -41,9 +41,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api_yamdb.urls'
-
-# new
-AUTH_USER_MODEL = 'users.User'
 
 TEMPLATES_DIR = BASE_DIR / 'templates'
 TEMPLATES = [
@@ -129,3 +126,11 @@ SIMPLE_JWT = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Переопределяем модель пользователя
+AUTH_USER_MODEL = 'users.User'
+
+# Подключаем бэкенд filebased.EmailBackend:
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# Указываем директорию, в которую будут сохраняться файлы писем:
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
