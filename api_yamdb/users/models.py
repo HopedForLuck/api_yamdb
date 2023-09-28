@@ -3,10 +3,32 @@ from django.db import models
 
 
 class MyUser(AbstractUser):
-    ROLE_CHOISES = [
-        ("user", "Аутентифицированный пользователь"),
-        ("moderator", "Модератор"),
-        ("admin", "Администратор"),
+    ADMIN = "admin"
+    MODERATOR = "moderator"
+    USER = "user"
+    ROLE = [
+        (ADMIN, "Администратор"),
+        (MODERATOR, "Модератор"),
+        (USER, "Пользователь")
     ]
-    role = models.TextField('Роль', choices=ROLE_CHOISES)
-    bio = models.TextField('Биография', blank=True)
+    REQUIRED_FIELDS = ["email", "password"]
+
+    bio = models.TextField(
+        blank=True,
+        verbose_name="Биография",
+    )
+    role = models.CharField(
+        max_length=16,
+        choices=ROLE,
+        default=USER,
+        verbose_name="Роль пользователя",
+    )
+    confirmation_code = models.CharField(
+        max_length=36,
+        null=True,
+        blank=True,
+        verbose_name="Код потдверждения",
+    )
+
+    class Meta:
+        ordering = ("id",)
