@@ -3,5 +3,10 @@ from django.db import models
 
 
 class MyUser(AbstractUser):
-    role = models.TextField('Роль', blank=True)
+    ROLE_CHOISES = [
+        ("user", "Аутентифицированный пользователь"),
+        ("moderator", "Модератор"),
+        ("admin", "Администратор"),
+    ]
+    role = models.TextField('Роль', choices=ROLE_CHOISES)
     bio = models.TextField('Биография', blank=True)
