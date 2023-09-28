@@ -1,3 +1,4 @@
+from rest_framework.decorators import action
 from django.db.models import Avg, Count
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status
@@ -76,6 +77,7 @@ class CommentViewSet(ModelViewSet):
         IsSuperUserIsAdminIsModeratorIsAuthor,
     )
     pagination_class = PageNumberPagination
+    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
 
     def get_review(self):
         review_id = self.kwargs.get('review_id')
@@ -89,9 +91,3 @@ class CommentViewSet(ModelViewSet):
         serializer.save(
             author=self.request.user,
             review=self.get_review())
-
-    # def perform_update(self, serializer):
-    #     if not self.request.user.is_admin:
-    #         serializer.save(
-    #             author=self.request.user,
-    #             review=self.get_review())
