@@ -51,7 +51,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-#### Примеры некоторых запросов API
+## Примеры некоторых запросов API
 
 Регистрация пользователя:  
 ``` POST /api/v1/auth/signup/ ```  
@@ -68,10 +68,10 @@ python manage.py runserver
 Добавление нового отзыва:  
 ``` POST /api/v1/titles/{title_id}/reviews/ ```    
 
-#### Полный список запросов API находится в документации по адресу /redoc/
+## Полный список запросов API находится в документации по адресу /redoc/
 
-#### Авторы
+## Авторы
 
-Чурилов Александр - [https://github.com/HopedForLuck]
-Горбунов Александр - [https://github.com/Alexander-Gorbunov-gth]
-Орехов Владимир - [https://github.com/vo56514]
+### Чурилов Александр - [https://github.com/HopedForLuck]
+### Горбунов Александр - [https://github.com/Alexander-Gorbunov-gth]
+### Орехов Владимир - [https://github.com/vo56514]
