@@ -51,6 +51,7 @@ class ReviewViewSet(ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly,
         IsSuperUserIsAdminIsModeratorIsAuthor,
     )
+    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
 
     def get_title(self):
         """Возвращает объект текущего произведения."""
