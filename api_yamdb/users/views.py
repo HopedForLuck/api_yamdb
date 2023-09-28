@@ -47,5 +47,4 @@ class UsersViewSet(viewsets.ModelViewSet):
 
 
 class GetTokenViewSet(TokenObtainPairView):
-    
     serializer_class = TokenSerializer
