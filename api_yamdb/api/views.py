@@ -1,9 +1,12 @@
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import permissions, status
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.mixins import ListModelMixin, CreateModelMixin
+from rest_framework.response import Response
 from reviews.models import Category, Comment, Genre, Review, Title
-
+from users.models import User
 from .mixins import CreateListDestroyViewSet
 from .serializers import (CategorySerializer, GenreSerializer,
                           TitleNotSafeSerializer, TitleSafeSerializer,
@@ -70,12 +73,14 @@ class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
-        IsSuperUserIsAdminIsModeratorIsAuthor
+        IsSuperUserIsAdminIsModeratorIsAuthor,
     )
+    pagination_class = PageNumberPagination
 
     def get_review(self):
         review_id = self.kwargs.get('review_id')
-        return get_object_or_404(Review, pk=review_id)
+        comments = Review.objects.annotate(count=Count("comments"))
+        return get_object_or_404(comments, pk=review_id,)
 
     def get_queryset(self):
         return self.get_review().comments.all()
@@ -83,5 +88,10 @@ class CommentViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(
             author=self.request.user,
-            review=self.get_review()
-        )
+            review=self.get_review())
+
+    # def perform_update(self, serializer):
+    #     if not self.request.user.is_admin:
+    #         serializer.save(
+    #             author=self.request.user,
+    #             review=self.get_review())
