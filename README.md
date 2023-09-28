@@ -72,6 +72,6 @@ python manage.py runserver
 
 ## Авторы
 
-### Чурилов Александр - [https://github.com/HopedForLuck]
-### Горбунов Александр - [https://github.com/Alexander-Gorbunov-gth]
-### Орехов Владимир - [https://github.com/vo56514]
+##### Чурилов Александр - [https://github.com/HopedForLuck]
+##### Горбунов Александр - [https://github.com/Alexander-Gorbunov-gth]
+##### Орехов Владимир - [https://github.com/vo56514]
