@@ -62,7 +62,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         # validators = [
         #     serializers.UniqueTogetherValidator(
         #         queryset=Review.objects.all(),
-        #         fields=('author_id', 'title_id')
+        #         fields=('author', 'title')
         #     )
         # ]
 
