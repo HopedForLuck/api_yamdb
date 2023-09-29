@@ -32,7 +32,8 @@ class TitleViewSet(ModelViewSet):
     """
     Получить список всех объектов. Права доступа: Доступно без токена
     """
-    queryset = Title.objects.all()
+    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
