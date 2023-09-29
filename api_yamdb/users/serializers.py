@@ -12,10 +12,6 @@ User = get_user_model()
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=MyUser.objects.all())]
-    )
 
     class Meta:
         model = MyUser
