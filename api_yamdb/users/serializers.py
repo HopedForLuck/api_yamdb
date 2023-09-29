@@ -21,13 +21,6 @@ class SignUpSerializer(serializers.ModelSerializer):
         model = MyUser
         fields = ("username", "email")
 
-    def validate_email(self, email):
-        if email == self.context["request"].user:
-            raise serializers.ValidationError(
-                "Такой email уже зарегистрирован!"
-            )
-        return email
-
     def validate_username(self, username):
         if username == "me":
             raise serializers.ValidationError(
