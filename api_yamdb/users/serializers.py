@@ -10,6 +10,7 @@ from users.models import MyUser
 
 User = get_user_model()
 
+
 class SignUpSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
@@ -46,11 +47,18 @@ class TokenSerializer(TokenObtainSerializer):
         self.fields["password"] = serializers.HiddenField(default="")
 
     def validate(self, attrs):
-        print('attrs')
-        print(attrs)
         self.user = get_object_or_404(User, username=attrs["username"])
         if self.user.confirmation_code != attrs["confirmation_code"]:
             raise serializers.ValidationError("Неверный код подтверждения")
         data = str(self.get_token(self.user))
 
         return {"token": data}
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = (
+            "username", "email", "first_name", "last_name", "bio", "role"
+        )
+        model = User

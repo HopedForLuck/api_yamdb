@@ -12,7 +12,14 @@ class MyUser(AbstractUser):
         (USER, "Пользователь")
     ]
     REQUIRED_FIELDS = ["email", "password"]
-
+    email = models.EmailField(
+        ('email address'),
+        blank=True,
+        unique=True,
+        error_messages={
+            'unique': ("Пользователь с такой почтой уже существует"),
+        },
+    )
     bio = models.TextField(
         blank=True,
         verbose_name="Биография",
@@ -32,3 +39,4 @@ class MyUser(AbstractUser):
 
     class Meta:
         ordering = ("id",)
+        unique_together = (("username", "email"),)
