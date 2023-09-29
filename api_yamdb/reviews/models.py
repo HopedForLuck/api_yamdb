@@ -101,12 +101,6 @@ class Title(models.Model):
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
         ordering = ('name', )
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['name', 'genre'],
-        #         name='unique_name_genre'
-        #     )
-        # ]
 
     def __str__(self):
         return self.name[:10]
@@ -141,6 +135,7 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name="Произведение",
+        # null=True
     )
     text = models.TextField(max_length=200)
     author = models.ForeignKey(
@@ -164,13 +159,12 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        # unique_together = ('author', 'title')
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['author', 'title'],
-        #         name='unique_author_title'
-        #     )
-        # ]
+        constraints = (
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='unique_author_title'
+            ),
+        )
 
     def __str__(self):
         return self.text[:10]

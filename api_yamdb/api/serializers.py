@@ -58,22 +58,25 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ('id', 'text', 'author', 'score', 'pub_date')
+        # fields = '__all__'
+        # validators = [
+        #     serializers.UniqueTogetherValidator(
+        #         queryset=Review.objects.all(),
+        #         fields=('author_id', 'title_id')
+        #     )
+        # ]
 
-    # def validate(self, data):
-    #     request = self.context['request']
-    #     author = request.user
-    #     title_id = self.context.get('title_id')
-
-    #     # title_id = self.context.get('view').self.kwargs.get('title_id')
-    #     # title = get_object_or_404(Title, pk=title_id)
-    #     if (
-    #             self.request.method == 'POST'
-    #             and Review.objects.filter(title=title_id, author=author).exists()
-    #     ):
-    #         raise serializers.ValidationError(
-    #             'Может существовать только один отзыв!'
-    #         )
-    #     return data
+    def validate(self, data):
+        """Запрет на создание повторного отзыва."""
+        if not self.context.get('request').method == 'POST':
+            return data
+        author = self.context.get('request').user
+        title_id = self.context.get('view').kwargs.get('title_id')
+        if Review.objects.filter(author=author, title=title_id).exists():
+            raise serializers.ValidationError(
+                'Вы уже оставляли отзыв на это произведение'
+            )
+        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):
