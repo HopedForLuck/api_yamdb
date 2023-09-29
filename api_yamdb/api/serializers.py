@@ -1,7 +1,5 @@
 from rest_framework import serializers
-
-
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Comment, Genre, Review, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -48,3 +46,39 @@ class TitleNotSafeSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Title
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    class Meta:
+        model = Review
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
+
+    # def validate(self, data):
+    #     request = self.context['request']
+    #     author = request.user
+    #     title_id = self.context.get('title_id')
+
+    #     # title_id = self.context.get('view').self.kwargs.get('title_id')
+    #     # title = get_object_or_404(Title, pk=title_id)
+    #     if (
+    #             self.request.method == 'POST'
+    #             and Review.objects.filter(title=title_id, author=author).exists()
+    #     ):
+    #         raise serializers.ValidationError(
+    #             'Может существовать только один отзыв!'
+    #         )
+    #     return data
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField(
+        read_only=True,
+    )
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'author', 'pub_date')
