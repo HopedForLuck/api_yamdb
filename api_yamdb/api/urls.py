@@ -2,9 +2,10 @@ from django.urls import include, path
 from rest_framework import routers
 
 from .views import CategoryViewSet, GenreViewSet, TitleViewSet, CommentViewSet, ReviewViewSet
-from users.views import UsersViewSet, SignUpViewSet, GetTokenViewSet
+from users.views import UsersViewSet, SignUpViewSet, GetTokenViewSet, MeProfileViewSet
+from .routers import GetPostPathDeleteRouter
 
-router = routers.DefaultRouter()
+router = GetPostPathDeleteRouter()
 router.register('categories', CategoryViewSet, basename='categories')
 router.register('genres', GenreViewSet, basename='genres')
 router.register('titles', TitleViewSet, basename='titles')
@@ -20,6 +21,10 @@ router.register(
     basename="comments")
 
 urlpatterns = [
+    path('users/me/', MeProfileViewSet.as_view({
+        'get': 'retrieve',
+        'patch': 'partial_update'
+        })),
     path('', include(router.urls)),
     path("auth/token/", GetTokenViewSet.as_view(), name="token"),
 ]
