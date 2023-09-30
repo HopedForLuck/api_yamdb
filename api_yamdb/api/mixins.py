@@ -12,4 +12,3 @@ class CreateListDestroyViewSet(mixins.CreateModelMixin,
     permission_classes = (AnonimReadOnly | IsSuperUserOrIsAdminOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    # lookup_field = 'slug'

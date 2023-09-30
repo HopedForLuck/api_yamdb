@@ -136,7 +136,9 @@ class GenreTitle(models.Model):
         ordering = ('id',)
 
     def __str__(self):
-        return f'{self.title} относится к следующему(им) жанру(ам): {self.genre}'
+        return (
+            f'{self.title} относится к следующему(им) жанру(ам): {self.genre}'
+        )
 
 
 class Review(models.Model):
