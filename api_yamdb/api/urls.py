@@ -3,8 +3,9 @@ from rest_framework import routers
 
 from .views import CategoryViewSet, GenreViewSet, TitleViewSet, CommentViewSet, ReviewViewSet
 from users.views import UsersViewSet, SignUpViewSet, GetTokenViewSet, MeProfileViewSet
+from .routers import GetPostPathDeleteRouter
 
-router = routers.DefaultRouter()
+router = GetPostPathDeleteRouter()
 router.register('categories', CategoryViewSet, basename='categories')
 router.register('genres', GenreViewSet, basename='genres')
 router.register('titles', TitleViewSet, basename='titles')
