@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from users.models import *
+
 
 class IsSuperUserOrIsAdminOnly(permissions.BasePermission):
     def has_permission(self, request, view):

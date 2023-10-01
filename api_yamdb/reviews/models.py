@@ -1,10 +1,12 @@
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 
 User = get_user_model()
+
 
 def current_year():
     return datetime.date.today().year
@@ -22,6 +24,10 @@ class Category(models.Model):
         max_length=50,
         verbose_name='slug',
         unique=True,
+        validators=[RegexValidator(
+            regex=r'^[-a-zA-Z0-9_]+$',
+            message='Слаг для категории содержит недопустимый символ'
+        )]
     )
 
     class Meta:
@@ -37,7 +43,7 @@ class Genre(models.Model):
     """Класс жанров."""
 
     name = models.CharField(
-        max_length=75,
+        max_length=256,
         unique=True,
         verbose_name='Hазвание',
     )
@@ -45,6 +51,10 @@ class Genre(models.Model):
         max_length=50,
         verbose_name='slug',
         unique=True,
+        validators=[RegexValidator(
+            regex=r'^[-a-zA-Z0-9_]+$',
+            message='Слаг для жанра содержит недопустимый символ'
+        )]
     )
 
     class Meta:
@@ -62,6 +72,7 @@ class Title(models.Model):
     name = models.CharField(
         max_length=150,
         verbose_name='Hазвание',
+        db_index=True
     )
     year = models.PositiveIntegerField(
         verbose_name='Год выхода',
@@ -75,6 +86,7 @@ class Title(models.Model):
                 message='Мы не можем заглядывать в будущее'
             )
         ],
+        db_index=True
     )
     description = models.TextField(
         verbose_name='описание',
@@ -101,7 +113,7 @@ class Title(models.Model):
         ordering = ('name', )
 
     def __str__(self):
-        return self.name
+        return self.name[:10]
 
 
 class GenreTitle(models.Model):
@@ -124,7 +136,9 @@ class GenreTitle(models.Model):
         ordering = ('id',)
 
     def __str__(self):
-        return f'{self.title} относится к следующему(им) жанру(ам): {self.genre}'
+        return (
+            f'{self.title} относится к следующему(им) жанру(ам): {self.genre}'
+        )
 
 
 class Review(models.Model):

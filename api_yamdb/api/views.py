@@ -1,9 +1,7 @@
 from django.db.models import Avg, Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
 from rest_framework import permissions
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 from reviews.models import Category, Genre, Review, Title
 
@@ -11,7 +9,7 @@ from .filters import TitleFilter
 from .mixins import CreateListDestroyViewSet
 from .permissions import (AnonimReadOnly,
                           IsSuperUserIsAdminIsModeratorIsAuthor,
-                          IsSuperUserOrIsAdminOnly, )
+                          IsSuperUserOrIsAdminOnly,)
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleNotSafeSerializer, TitleSafeSerializer)
@@ -22,9 +20,7 @@ class CategoryViewSet(CreateListDestroyViewSet):
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsSuperUserOrIsAdminOnly,)
-    filter_backends = (SearchFilter,)
-    search_fields = ('name',)
+    lookup_field = 'slug'
 
 
 class GenreViewSet(CreateListDestroyViewSet):
@@ -32,16 +28,13 @@ class GenreViewSet(CreateListDestroyViewSet):
 
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    filter_backends = (SearchFilter,)
-    search_fields = ('name',)
-    permission_classes = (IsSuperUserOrIsAdminOnly,)
+    lookup_field = 'slug'
 
 
 class TitleViewSet(ModelViewSet):
     """
     Получить список всех объектов. Права доступа: Доступно без токена
     """
-    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
     queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     permission_classes = (AnonimReadOnly | IsSuperUserOrIsAdminOnly,)
     filter_backends = (DjangoFilterBackend,)
@@ -59,7 +52,6 @@ class ReviewViewSet(ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly,
         IsSuperUserIsAdminIsModeratorIsAuthor,
     )
-    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
 
     def get_title(self):
         title_id = self.kwargs.get('title_id')
@@ -81,8 +73,6 @@ class CommentViewSet(ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly,
         IsSuperUserIsAdminIsModeratorIsAuthor,
     )
-    pagination_class = PageNumberPagination
-    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
 
     def get_review(self):
         review_id = self.kwargs.get('review_id')
