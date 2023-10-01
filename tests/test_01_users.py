@@ -517,8 +517,8 @@ class Test01UserAPI:
             response = client.patch(f'{self.USERS_ME_URL}', data=data)
             assert response.status_code == HTTPStatus.OK, (
                 'Проверьте, что PATCH-запрос к '
-                f'`{self.USERUSERS_ME_URLS_URL}` доступен пользователям всех '
-                'ролей и возвращает ответ со статусом 200.'
+                f'`{self.USERS_ME_URL}` доступен пользователям всех '
+                f'ролей и возвращает ответ со статусом 200. {user}'
             )
             user = django_user_model.objects.filter(
                 username=user.username
