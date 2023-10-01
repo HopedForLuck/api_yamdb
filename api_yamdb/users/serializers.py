@@ -1,3 +1,5 @@
+import uuid
+
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
@@ -6,7 +8,10 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
-from users.models import MyUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from rest_framework.response import Response
+
+from rest_framework import status
 
 User = get_user_model()
 
@@ -14,8 +19,15 @@ User = get_user_model()
 class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = MyUser
+        model = User
         fields = ("username", "email")
+
+    def validate_email(self, email):
+        if email == self.context["request"].user:
+            raise serializers.ValidationError(
+                "Такой email уже зарегистрирован!"
+            )
+        return email
 
     def validate_username(self, username):
         if username == "me":
@@ -48,6 +60,16 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
-            "username", "email", "first_name", "last_name", "bio", "role"
+            "username", "email", "first_name", "last_name", "bio", "role",
         )
         model = User
+        
+
+class MeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = (
+            "username", "email", "first_name", "last_name", "bio", "role",
+        )
+        model = User
+        read_only_fields = ("role",)
