@@ -13,6 +13,7 @@ from .permissions import (AnonimReadOnly,
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleNotSafeSerializer, TitleSafeSerializer)
+from rest_framework.pagination import LimitOffsetPagination
 
 
 class CategoryViewSet(CreateListDestroyViewSet):
@@ -39,6 +40,7 @@ class TitleViewSet(ModelViewSet):
     permission_classes = (AnonimReadOnly | IsSuperUserOrIsAdminOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
+    pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -52,6 +54,7 @@ class ReviewViewSet(ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly,
         IsSuperUserIsAdminIsModeratorIsAuthor,
     )
+    pagination_class = LimitOffsetPagination
 
     def get_title(self):
         title_id = self.kwargs.get('title_id')
@@ -73,6 +76,7 @@ class CommentViewSet(ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly,
         IsSuperUserIsAdminIsModeratorIsAuthor,
     )
+    pagination_class = LimitOffsetPagination
 
     def get_review(self):
         review_id = self.kwargs.get('review_id')
