@@ -3,13 +3,13 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
-from reviews.models import Category, Genre, Review, Title
 
+from reviews.models import Category, Genre, Review, Title
 from .filters import TitleFilter
 from .mixins import CreateListDestroyViewSet
 from .permissions import (AnonimReadOnly,
                           IsSuperUserIsAdminIsModeratorIsAuthor,
-                          IsSuperUserOrIsAdminOnly,)
+                          IsSuperUserOrIsAdminOnly, )
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleNotSafeSerializer, TitleSafeSerializer)

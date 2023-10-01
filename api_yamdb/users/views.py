@@ -1,23 +1,17 @@
 import uuid
 
-
-from rest_framework_simplejwt.views import TokenObtainPairView
-from django.core.mail import send_mail
-
 from django.contrib.auth import get_user_model
-from rest_framework.decorators import action
+from django.core.mail import send_mail
 from rest_framework import permissions, status, viewsets, mixins, filters
-
-from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import SignUpSerializer, TokenSerializer, UserSerializer, MeSerializer
 from api.permissions import IsSuperUserOrIsAdminOnly
-
+from .serializers import (SignUpSerializer, TokenSerializer,
+                          UserSerializer, MeSerializer)
 
 User = get_user_model()
-
 
 
 class SignUpViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -76,9 +70,12 @@ class MeProfileViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         serializer = MeSerializer(request.user)
         return Response(serializer.data)
-    
+
     def partial_update(self, request, pk=None):
-        serializer = MeSerializer(request.user, data=request.data, partial=True)
+        serializer = MeSerializer(
+            request.user,
+            data=request.data,
+            partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

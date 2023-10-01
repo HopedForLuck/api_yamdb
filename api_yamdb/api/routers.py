@@ -1,8 +1,9 @@
 from rest_framework.routers import Route, DynamicRoute, SimpleRouter
 
+
 class GetPostPathDeleteRouter(SimpleRouter):
 
- routes = [
+    routes = [
         # List route.
         Route(
             url=r'^{prefix}{trailing_slash}$',

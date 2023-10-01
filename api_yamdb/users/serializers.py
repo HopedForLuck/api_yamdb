@@ -1,17 +1,8 @@
-import uuid
-
-from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
-from rest_framework_simplejwt.serializers import TokenObtainSerializer
-
-from rest_framework_simplejwt.tokens import AccessToken
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-
-from django.contrib.auth.validators import UnicodeUsernameValidator
-from rest_framework.response import Response
-
-from rest_framework import status
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
+from rest_framework_simplejwt.tokens import AccessToken
 
 User = get_user_model()
 
@@ -63,7 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
             "username", "email", "first_name", "last_name", "bio", "role",
         )
         model = User
-        
+
 
 class MeSerializer(serializers.ModelSerializer):
 

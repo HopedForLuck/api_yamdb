@@ -1,15 +1,14 @@
 from django.urls import include, path
-from rest_framework import routers
 
-from .views import (
-    CategoryViewSet, GenreViewSet,
-    TitleViewSet, CommentViewSet, ReviewViewSet
-)
 from users.views import (
     UsersViewSet, SignUpViewSet,
     GetTokenViewSet, MeProfileViewSet
 )
 from .routers import GetPostPathDeleteRouter
+from .views import (
+    CategoryViewSet, GenreViewSet,
+    TitleViewSet, CommentViewSet, ReviewViewSet
+)
 
 router = GetPostPathDeleteRouter()
 router.register('categories', CategoryViewSet, basename='categories')
