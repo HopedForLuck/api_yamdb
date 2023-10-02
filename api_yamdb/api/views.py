@@ -2,6 +2,7 @@ from django.db.models import Avg, Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
 
 from reviews.models import Category, Genre, Review, Title
@@ -13,7 +14,6 @@ from .permissions import (AnonimReadOnly,
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleNotSafeSerializer, TitleSafeSerializer)
-from rest_framework.pagination import LimitOffsetPagination
 
 
 class CategoryViewSet(CreateListDestroyViewSet):
