@@ -68,7 +68,7 @@ python manage.py runserver
 Добавление нового отзыва:  
 ``` POST /api/v1/titles/{title_id}/reviews/ ```    
 
-## Полный список запросов API находится в документации по адресу http://127.0.0.1:8000/redoc/
+## Полный список запросов API представлен в документе [redoc.html][3]
 ____
 Для тестирования работы приложения в терминале [Postman][1] можете воспользоваться коллекцией запросов из папки [postman_collection][2].
 
@@ -79,3 +79,4 @@ ____
 
 [1]: https://www.postman.com/
 [2]: ./postman_collection/
+[3]: ./static/redoc.html
