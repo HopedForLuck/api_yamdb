@@ -79,4 +79,4 @@ ____
 
 [1]: https://www.postman.com/
 [2]: ./postman_collection/
-[3]: ./static/templates/redoc.html
+[3]: ./api_yamdb/static/templates/redoc.html
