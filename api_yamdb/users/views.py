@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from api.permissions import IsSuperUserOrIsAdminOnly
+from api.v1.permissions import IsSuperUserOrIsAdminOnly
 from .serializers import (SignUpSerializer, TokenSerializer,
                           UserSerializer, MeSerializer)
 
