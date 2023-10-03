@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 
 
-class MyUser(AbstractUser):
+class User(AbstractUser):
 
     ADMIN = "admin"
     MODERATOR = "moderator"
@@ -14,8 +15,19 @@ class MyUser(AbstractUser):
     ]
     REQUIRED_FIELDS = ["email", "password"]
 
+    username = models.CharField(
+        max_length=150,
+        verbose_name='Имя пользователя',
+        unique=True,
+        db_index=True,
+        validators=[RegexValidator(
+            regex=r'^[\w.@+-]+\Z',
+            message='Имя пользователя содержит недопустимый символ'
+        )]
+    )
     email = models.EmailField(
         'email address',
+        max_length=254,
         blank=True,
         unique=True,
         error_messages={

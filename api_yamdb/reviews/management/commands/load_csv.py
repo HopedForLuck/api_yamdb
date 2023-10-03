@@ -11,14 +11,14 @@ from reviews.models import (
     Review,
     Title
 )
-from users.models import MyUser
+from users.models import User
 
 FILES_CLASSES = {
     'category.csv': Category,
     'genre.csv': Genre,
     'titles.csv': Title,
     'genre_title.csv': GenreTitle,
-    'users.csv': MyUser,
+    'users.csv': User,
     'review.csv': Review,
     'comments.csv': Comment,
 }
