@@ -13,7 +13,7 @@ from reviews.models import (
     Review,
     Title
 )
-from users.models import MyUser
+from users.models import User
 
 CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
 
@@ -22,7 +22,7 @@ FILES_CLASSES = {
     'genre': Genre,
     'titles': Title,
     'genre_title': GenreTitle,
-    'users': MyUser,
+    'users': User,
     'review': Review,
     'comments': Comment,
 }
@@ -31,7 +31,7 @@ FIELDS = {
     'category': ('category', Category),
     'title_id': ('title', Title),
     'genre_id': ('genre', Genre),
-    'author': ('author', MyUser),
+    'author': ('author', User),
     'review_id': ('review', Review),
 }
 
