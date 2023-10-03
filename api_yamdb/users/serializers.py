@@ -7,18 +7,20 @@ from rest_framework_simplejwt.tokens import AccessToken
 User = get_user_model()
 
 
+class MetaMixin(serializers.ModelSerializer):
+
+    class Meta:
+        fields = (
+            "username", "email", "first_name", "last_name", "bio", "role",
+        )
+        model = User
+
+
 class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
         fields = ("username", "email")
-
-    def validate_email(self, email):
-        if email == self.context["request"].user:
-            raise serializers.ValidationError(
-                "Такой email уже зарегистрирован!"
-            )
-        return email
 
     def validate_username(self, username):
         if username == "me":
@@ -47,20 +49,11 @@ class TokenSerializer(TokenObtainSerializer):
         return {"token": data}
 
 
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        fields = (
-            "username", "email", "first_name", "last_name", "bio", "role",
-        )
-        model = User
+class UserSerializer(MetaMixin):
+    pass
 
 
-class MeSerializer(serializers.ModelSerializer):
+class MeSerializer(MetaMixin):
 
-    class Meta:
-        fields = (
-            "username", "email", "first_name", "last_name", "bio", "role",
-        )
-        model = User
+    class Meta(MetaMixin.Meta):
         read_only_fields = ("role",)
