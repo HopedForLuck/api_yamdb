@@ -13,14 +13,6 @@ LENGTH_NAME = 256
 LENGTH_SLUG = 50
 
 
-def my_year_validator(value):
-    if value < 0 or value > timezone.now().year:
-        raise ValidationError(
-            '%(value)s is not a correcrt year!',
-            params={'value': value},
-        )
-
-
 def current_year():
     return timezone.now().year
 
@@ -78,7 +70,6 @@ class Title(models.Model):
     )
     year = models.PositiveIntegerField(
         verbose_name='Год выхода',
-        validators=[my_year_validator],
         db_index=True
     )
     description = models.TextField(
