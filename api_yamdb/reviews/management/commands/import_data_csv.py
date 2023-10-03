@@ -9,7 +9,7 @@ from reviews.models import (
     Category,
     Comment,
     Genre,
-    GenreTitle,
+    # GenreTitle,
     Review,
     Title
 )
@@ -21,7 +21,7 @@ FILES_CLASSES = {
     'category': Category,
     'genre': Genre,
     'titles': Title,
-    'genre_title': GenreTitle,
+    # 'genre_title': GenreTitle,
     'users': User,
     'review': Review,
     'comments': Comment,
