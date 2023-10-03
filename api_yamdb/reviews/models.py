@@ -1,4 +1,5 @@
-from datetime import datetime
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from django.contrib.auth import get_user_model
 from django.core.validators import (MaxValueValidator, MinValueValidator,
@@ -8,12 +9,20 @@ from django.db import models
 User = get_user_model()
 
 
+def my_year_validator(value):
+    if value < 0 or value > timezone.now().year:
+        raise ValidationError(
+            '%(value)s is not a correcrt year!',
+            params={'value': value},
+        )
+
+
 def current_year():
-    return datetime.date.today().year
+    return timezone.now().year
 
 
-class Category(models.Model):
-    """Класс категорий."""
+class CommonClass(models.Model):
+    """Вспомогательный класс с общими полями для моделей Genre и Category"""
 
     name = models.CharField(
         max_length=256,
@@ -30,6 +39,10 @@ class Category(models.Model):
         )]
     )
 
+
+class Category(CommonClass):
+    """Класс категорий."""
+
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
@@ -39,23 +52,8 @@ class Category(models.Model):
         return self.name
 
 
-class Genre(models.Model):
+class Genre(CommonClass):
     """Класс жанров."""
-
-    name = models.CharField(
-        max_length=256,
-        unique=True,
-        verbose_name='Hазвание',
-    )
-    slug = models.SlugField(
-        max_length=50,
-        verbose_name='slug',
-        unique=True,
-        validators=[RegexValidator(
-            regex=r'^[-a-zA-Z0-9_]+$',
-            message='Слаг для жанра содержит недопустимый символ'
-        )]
-    )
 
     class Meta:
         verbose_name = 'Жанр'
@@ -76,16 +74,7 @@ class Title(models.Model):
     )
     year = models.PositiveIntegerField(
         verbose_name='Год выхода',
-        validators=[
-            MinValueValidator(
-                0,
-                message='Это произведение слишком старо для нас'
-            ),
-            MaxValueValidator(
-                int(datetime.now().year),
-                message='Мы не можем заглядывать в будущее'
-            )
-        ],
+        validators=[my_year_validator],
         db_index=True
     )
     description = models.TextField(
@@ -148,7 +137,10 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name="Произведение",
     )
-    text = models.TextField(max_length=200)
+    text = models.TextField(
+        max_length=200,
+        verbose_name="Текст",
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -157,7 +149,8 @@ class Review(models.Model):
     )
     score = models.PositiveSmallIntegerField(
         validators=[
-            MinValueValidator(1), MaxValueValidator(10)
+            MinValueValidator(1, "Нельзя поставить оценку ниже 1"),
+            MaxValueValidator(10, "Нельзя поставить оценку больше 10")
         ],
         help_text="Оцените произведение по шкале от 1 до 10.",
     )
@@ -170,6 +163,7 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+        ordering = ('pub_date',)
         constraints = (
             models.UniqueConstraint(
                 fields=['author', 'title'],
@@ -183,11 +177,20 @@ class Review(models.Model):
 
 class Comment(models.Model):
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments'
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name="Отзыв"
     )
-    text = models.TextField(max_length=200)
+    text = models.TextField(
+        max_length=200,
+        verbose_name="Текст"
+    )
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments'
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name="Автор"
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
@@ -198,6 +201,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Коментарий'
         verbose_name_plural = 'Коментарии'
+        ordering = ('pub_date',)
 
     def __str__(self):
         return self.review[:10]

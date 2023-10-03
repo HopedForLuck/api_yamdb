@@ -3,6 +3,7 @@ from django.db import models
 
 
 class MyUser(AbstractUser):
+
     ADMIN = "admin"
     MODERATOR = "moderator"
     USER = "user"
@@ -12,12 +13,13 @@ class MyUser(AbstractUser):
         (USER, "Пользователь")
     ]
     REQUIRED_FIELDS = ["email", "password"]
+
     email = models.EmailField(
-        ('email address'),
+        'email address',
         blank=True,
         unique=True,
         error_messages={
-            'unique': ("Пользователь с такой почтой уже существует"),
+            'unique': "Пользователь с такой почтой уже существует",
         },
     )
     bio = models.TextField(
@@ -36,6 +38,18 @@ class MyUser(AbstractUser):
         blank=True,
         verbose_name="Код потдверждения",
     )
+
+    @property
+    def is_user(self):
+        return self.role == self.USER
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
 
     class Meta:
         ordering = ("id",)
