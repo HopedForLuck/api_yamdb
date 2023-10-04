@@ -3,19 +3,14 @@ import os
 
 from django.core.management import BaseCommand
 from django.db import IntegrityError
-
-from api_yamdb.settings import BASE_DIR
-from reviews.models import (
-    Category,
-    Comment,
-    Genre,
-    # GenreTitle,
-    Review,
-    Title
-)
+from reviews.models import (Category, Comment, Genre, Review,  # GenreTitle,
+                            Title)
 from users.models import User
 
+from api_yamdb.settings import BASE_DIR
+
 CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
+
 
 FILES_CLASSES = {
     'category': Category,

@@ -129,5 +129,6 @@ SIMPLE_JWT = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+EMAIL_ADMIN = 'from@example.com'
 
 CSV_FILES_DIR = BASE_DIR / 'static/data'

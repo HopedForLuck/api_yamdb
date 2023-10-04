@@ -1,15 +1,17 @@
 import uuid
 
+from api.v1.permissions import IsSuperUserOrIsAdminOnly
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
-from rest_framework import permissions, status, viewsets, mixins, filters
+from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from api.v1.permissions import IsSuperUserOrIsAdminOnly
-from .serializers import (SignUpSerializer, TokenSerializer,
-                          UserSerializer, MeSerializer)
+from api_yamdb.settings import EMAIL_ADMIN
+
+from .serializers import (MeSerializer, SignUpSerializer, TokenSerializer,
+                          UserSerializer)
 
 User = get_user_model()
 
@@ -23,7 +25,7 @@ class SignUpViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         send_mail(
             "Регистрация",
             f"Ваш код подтверждения! - {code}",
-            "from@example.com",
+            EMAIL_ADMIN,
             [email],
             fail_silently=True,
         )
