@@ -2,6 +2,11 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
+LENGTH_EMAIL = 254
+LENGTH_USERNAME = 150
+LENGTH_ROLE = 16
+LENGTH_CODE = 36
+
 
 class User(AbstractUser):
 
@@ -16,7 +21,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["email", "password"]
 
     username = models.CharField(
-        max_length=150,
+        max_length=LENGTH_USERNAME,
         verbose_name='Имя пользователя',
         unique=True,
         db_index=True,
@@ -27,7 +32,7 @@ class User(AbstractUser):
     )
     email = models.EmailField(
         'email address',
-        max_length=254,
+        max_length=LENGTH_EMAIL,
         blank=True,
         unique=True,
         error_messages={
@@ -39,13 +44,13 @@ class User(AbstractUser):
         verbose_name="Биография",
     )
     role = models.CharField(
-        max_length=16,
+        max_length=LENGTH_ROLE,
         choices=ROLE,
         default=USER,
         verbose_name="Роль пользователя",
     )
     confirmation_code = models.CharField(
-        max_length=36,
+        max_length=LENGTH_CODE,
         null=True,
         blank=True,
         verbose_name="Код потдверждения",
