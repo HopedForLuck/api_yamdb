@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
@@ -9,6 +10,14 @@ User = get_user_model()
 LENGTH_TEXT = 10
 LENGTH_NAME = 256
 LENGTH_SLUG = 50
+
+
+def my_year_validator(value):
+    if value < 0 or value > timezone.now().year:
+        raise ValidationError(
+            '%(value)s is not a correcrt year!',
+            params={'value': value},
+        )
 
 
 def current_year():
@@ -68,6 +77,7 @@ class Title(models.Model):
     )
     year = models.PositiveIntegerField(
         verbose_name='Год выхода',
+        validators=[my_year_validator],
         db_index=True
     )
     description = models.TextField(
@@ -166,7 +176,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Коментарий'
         verbose_name_plural = 'Коментарии'
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.review[:LENGTH_TEXT]

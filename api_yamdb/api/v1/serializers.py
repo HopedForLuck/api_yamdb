@@ -1,7 +1,6 @@
-from django.core.validators import MaxValueValidator, MinValueValidator
 from rest_framework import serializers
 from reviews.models import (Category, Comment, Genre, Review, Title,
-                            current_year)
+                            my_year_validator)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -45,7 +44,7 @@ class TitleNotSafeSerializer(serializers.ModelSerializer):
         queryset=Category.objects.all()
     )
     year = serializers.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(current_year)]
+        validators=[my_year_validator]
     )
 
     class Meta:
