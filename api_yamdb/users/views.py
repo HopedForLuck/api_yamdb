@@ -35,7 +35,6 @@ class SignUpViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        # return Response(serializer.validated_data, status=status.HTTP_200_OK)
         return Response(request.data, status=status.HTTP_200_OK)
 
     # def create(self, request, *args, **kwargs):

@@ -31,13 +31,11 @@ class User(AbstractUser):
         )]
     )
     email = models.EmailField(
-        'email address',
         max_length=LENGTH_EMAIL,
-        blank=True,
         unique=True,
         error_messages={
             'unique': "Пользователь с такой почтой уже существует",
-        },
+        }
     )
     bio = models.TextField(
         blank=True,
@@ -70,4 +68,3 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ("id",)
-        unique_together = (("username", "email"),)

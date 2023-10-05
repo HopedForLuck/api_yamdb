@@ -41,13 +41,14 @@ class MetaMixin(serializers.ModelSerializer):
 
 class SignUpSerializer(serializers.Serializer):
     username = serializers.CharField(
+        required=True,
         max_length=LENGTH_USERNAME,
         validators=[RegexValidator(
             regex=r'^[\w.@+-]+\Z',
             message='Имя пользователя содержит недопустимый символ'
         )]
     )
-    email = serializers.EmailField(max_length=LENGTH_EMAIL)
+    email = serializers.EmailField(required=True, max_length=LENGTH_EMAIL)
 
     def send_email(self, email, code):
         send_mail(
@@ -71,6 +72,14 @@ class SignUpSerializer(serializers.Serializer):
         email = validated_data['email']
         code = uuid.uuid4()
 
+        class Meta:
+            model = User
+            fields = ('username', 'email')
+            validators = [serializers.UniqueTogetherValidator(
+                queryset=User.objects.all(),
+                fields=("username", "email"))
+            ]
+
         if User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
             if user.email != email:
@@ -83,7 +92,6 @@ class SignUpSerializer(serializers.Serializer):
             validated_data['confirmation_code'] = code
             self.send_email(email=email, code=code)
 
-        # return Response({'users': serializers.data})
         return User.objects.create(**validated_data)
 
 

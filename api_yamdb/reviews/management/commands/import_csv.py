@@ -35,7 +35,7 @@ class Command(BaseCommand):
         ):
             title = Title(
                 id=row['id'], name=row['name'],
-                year=row['year'], category_id=row['category_id']
+                year=row['year'], category_id=row['category']
             )
             title.save()
         for row in DictReader(
@@ -43,7 +43,7 @@ class Command(BaseCommand):
         ):
             review = Review(
                 id=row['id'], title_id=row['title_id'],
-                text=row['text'], author_id=row['author_id'],
+                text=row['text'], author_id=row['author'],
                 score=row['score'], pub_date=row['pub_date']
             )
             review.save()
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         ):
             comment = Comment(
                 id=row['id'], review_id=row['review_id'],
-                text=row['text'], author_id=row['author_id'],
+                text=row['text'], author_id=row['author'],
                 pub_date=row['pub_date']
             )
             comment.save()
