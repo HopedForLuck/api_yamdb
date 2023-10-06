@@ -1,17 +1,16 @@
+import uuid
+
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.core.validators import RegexValidator
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import AccessToken
 
-from rest_framework.exceptions import ValidationError
-import uuid
-from django.core.mail import send_mail
 from api_yamdb.settings import EMAIL_ADMIN
 from users.models import LENGTH_USERNAME, LENGTH_EMAIL
-from django.core.validators import RegexValidator
-from rest_framework.response import Response
-from rest_framework import status
 
 User = get_user_model()
 
@@ -23,20 +22,6 @@ class MetaMixin(serializers.ModelSerializer):
             "username", "email", "first_name", "last_name", "bio", "role",
         )
         model = User
-
-
-# class SignUpSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = User
-#         fields = ("username", "email")
-
-#     def validate_username(self, username):
-#         if username == "me":
-#             raise serializers.ValidationError(
-#                 'Запрещено имя "me", придумайте другое имя!'
-#             )
-#         return username
 
 
 class SignUpSerializer(serializers.Serializer):
@@ -53,10 +38,6 @@ class SignUpSerializer(serializers.Serializer):
     class Meta:
         model = User
         fields = ("username", "email")
-        # validators = [serializers.UniqueTogetherValidator(
-        #     queryset=User.objects.all(),
-        #     fields=("username", "email"))
-        # ]
 
     def send_email(self, email, code):
         send_mail(
