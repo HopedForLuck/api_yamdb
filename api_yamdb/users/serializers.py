@@ -50,6 +50,14 @@ class SignUpSerializer(serializers.Serializer):
     )
     email = serializers.EmailField(required=True, max_length=LENGTH_EMAIL)
 
+    class Meta:
+        model = User
+        fields = ("username", "email")
+        # validators = [serializers.UniqueTogetherValidator(
+        #     queryset=User.objects.all(),
+        #     fields=("username", "email"))
+        # ]
+
     def send_email(self, email, code):
         send_mail(
             "Регистрация",
@@ -72,27 +80,22 @@ class SignUpSerializer(serializers.Serializer):
         email = validated_data['email']
         code = uuid.uuid4()
 
-        class Meta:
-            model = User
-            fields = ('username', 'email')
-            validators = [serializers.UniqueTogetherValidator(
-                queryset=User.objects.all(),
-                fields=("username", "email"))
-            ]
-
         if User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
             if user.email != email:
                 raise ValidationError("У данного пользователя другая почта!")
-            validated_data['confirmation_code'] = code
+            # validated_data['confirmation_code'] = code
+            user.confirmation_code = code
+            user.save()
             self.send_email(email=email, code=code)
+            return validated_data
         else:
             if User.objects.filter(email=email).exists():
                 raise ValidationError("Этот адрес уже занят!")
             validated_data['confirmation_code'] = code
             self.send_email(email=email, code=code)
 
-        return User.objects.create(**validated_data)
+            return User.objects.create(**validated_data)
 
 
 class TokenSerializer(TokenObtainSerializer):
