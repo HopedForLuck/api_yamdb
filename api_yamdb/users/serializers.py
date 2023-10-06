@@ -65,7 +65,6 @@ class SignUpSerializer(serializers.Serializer):
             user = User.objects.get(username=username)
             if user.email != email:
                 raise ValidationError("У данного пользователя другая почта!")
-            # validated_data['confirmation_code'] = code
             user.confirmation_code = code
             user.save()
             self.send_email(email=email, code=code)
