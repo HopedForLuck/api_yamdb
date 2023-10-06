@@ -1,15 +1,17 @@
 import uuid
 
+from api.v1.permissions import IsSuperUserOrIsAdminOnly
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
-from rest_framework import permissions, status, viewsets, mixins, filters
+from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from api.v1.permissions import IsSuperUserOrIsAdminOnly
-from .serializers import (SignUpSerializer, TokenSerializer,
-                          UserSerializer, MeSerializer)
+from api_yamdb.settings import EMAIL_ADMIN
+
+from .serializers import (MeSerializer, SignUpSerializer, TokenSerializer,
+                          UserSerializer)
 
 User = get_user_model()
 
@@ -19,38 +21,45 @@ class SignUpViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
     serializer_class = SignUpSerializer
     permission_classes = (permissions.AllowAny,)
 
-    def send_email(self, email, code):
-        send_mail(
-            "Регистрация",
-            f"Ваш код подтверждения! - {code}",
-            "from@example.com",
-            [email],
-            fail_silently=True,
-        )
+    # def send_email(self, email, code):
+    #     send_mail(
+    #         "Регистрация",
+    #         f"Ваш код подтверждения! - {code}",
+    #         EMAIL_ADMIN,
+    #         [email],
+    #         fail_silently=True,
+    #     )
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        username = serializer.initial_data.get("username")
-        email = serializer.initial_data.get("email")
-        code = uuid.uuid4()
-        if User.objects.filter(username=username).exists():
-            user = User.objects.get(username=username)
-            if user.email != email:
-                raise ValidationError("У данного пользователя другая почта!")
-            serializer.is_valid(raise_exception=False)
-            user.confirmation_code = uuid.uuid4()
-            user.save()
-        else:
-            serializer.is_valid(raise_exception=True)
-            user = serializer.save()
-            user.confirmation_code = uuid.uuid4()
-            user.set_unusable_password()
-            user = serializer.save()
-        self.send_email(
-            email=email,
-            code=code
-        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return Response(request.data, status=status.HTTP_200_OK)
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     username = serializer.initial_data.get("username")
+    #     email = serializer.initial_data.get("email")
+#         code = uuid.uuid4()
+#         if User.objects.filter(username=username).exists():
+#             user = User.objects.get(username=username)
+#             if user.email != email:
+#                 raise ValidationError("У данного пользователя другая почта!")
+#             serializer.is_valid(raise_exception=False)
+#             user.confirmation_code = uuid.uuid4()
+#             user.save()
+#         else:
+#             serializer.is_valid(raise_exception=True)
+#             user = serializer.save()
+#             user.confirmation_code = uuid.uuid4()
+#             user.set_unusable_password()
+#             user = serializer.save()
+#         self.send_email(
+#             email=email,
+#             code=code
+#         )
+#         return Response(request.data, status=status.HTTP_200_OK)
 
 
 class UsersViewSet(viewsets.ModelViewSet):

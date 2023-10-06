@@ -1,6 +1,6 @@
 from rest_framework import serializers
-
-from reviews.models import Category, Comment, Genre, Review, Title
+from reviews.models import (Category, Comment, Genre, Review, Title,
+                            my_year_validator)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -42,6 +42,9 @@ class TitleNotSafeSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         slug_field='slug',
         queryset=Category.objects.all()
+    )
+    year = serializers.IntegerField(
+        validators=[my_year_validator]
     )
 
     class Meta:

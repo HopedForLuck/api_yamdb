@@ -1,12 +1,15 @@
-from django.core.exceptions import ValidationError
-from django.utils import timezone
-
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
+from django.utils import timezone
 
 User = get_user_model()
+
+LENGTH_TEXT = 10
+LENGTH_NAME = 256
+LENGTH_SLUG = 50
 
 
 def my_year_validator(value):
@@ -25,17 +28,17 @@ class CommonClass(models.Model):
     """Вспомогательный класс с общими полями для моделей Genre и Category"""
 
     name = models.CharField(
-        max_length=256,
+        max_length=LENGTH_NAME,
         verbose_name='Hазвание',
         unique=True,
     )
     slug = models.SlugField(
-        max_length=50,
+        max_length=LENGTH_SLUG,
         verbose_name='slug',
         unique=True,
         validators=[RegexValidator(
             regex=r'^[-a-zA-Z0-9_]+$',
-            message='Слаг для категории содержит недопустимый символ'
+            message='Слаг содержит недопустимый символ'
         )]
     )
 
@@ -68,7 +71,7 @@ class Title(models.Model):
     """Класс произведений."""
 
     name = models.CharField(
-        max_length=150,
+        max_length=LENGTH_NAME,
         verbose_name='Hазвание',
         db_index=True
     )
@@ -83,7 +86,6 @@ class Title(models.Model):
     )
     genre = models.ManyToManyField(
         Genre,
-        through='GenreTitle',
         related_name='titles',
         verbose_name='Жанр'
 
@@ -102,32 +104,7 @@ class Title(models.Model):
         ordering = ('name', )
 
     def __str__(self):
-        return self.name[:10]
-
-
-class GenreTitle(models.Model):
-    """Класс, связывающий жанры и произведения."""
-
-    genre = models.ForeignKey(
-        Genre,
-        on_delete=models.CASCADE,
-        verbose_name='Жанр'
-    )
-    title = models.ForeignKey(
-        Title,
-        on_delete=models.CASCADE,
-        verbose_name='произведение'
-    )
-
-    class Meta:
-        verbose_name = 'Связь жанра и произведения'
-        verbose_name_plural = 'Связи жанров и произведений'
-        ordering = ('id',)
-
-    def __str__(self):
-        return (
-            f'{self.title} относится к следующему(им) жанру(ам): {self.genre}'
-        )
+        return self.name[:LENGTH_TEXT]
 
 
 class Review(models.Model):
@@ -138,7 +115,6 @@ class Review(models.Model):
         verbose_name="Произведение",
     )
     text = models.TextField(
-        max_length=200,
         verbose_name="Текст",
     )
     author = models.ForeignKey(
@@ -163,7 +139,7 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
         constraints = (
             models.UniqueConstraint(
                 fields=['author', 'title'],
@@ -172,7 +148,7 @@ class Review(models.Model):
         )
 
     def __str__(self):
-        return self.text[:10]
+        return self.text[:LENGTH_TEXT]
 
 
 class Comment(models.Model):
@@ -183,7 +159,6 @@ class Comment(models.Model):
         verbose_name="Отзыв"
     )
     text = models.TextField(
-        max_length=200,
         verbose_name="Текст"
     )
     author = models.ForeignKey(
@@ -201,7 +176,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Коментарий'
         verbose_name_plural = 'Коментарии'
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
 
     def __str__(self):
-        return self.review[:10]
+        return self.review[:LENGTH_TEXT]
