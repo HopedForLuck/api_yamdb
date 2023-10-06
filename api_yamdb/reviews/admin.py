@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-from .models import Category, Comment, Genre, GenreTitle, Review, Title
+from .models import Category, Comment, Genre, Review, Title
 
 
+@admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
         "review",
@@ -14,6 +15,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ("author",)
 
 
+@admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
     list_display = (
         "name",
@@ -28,34 +30,25 @@ class TitleAdmin(admin.ModelAdmin):
     list_display_links = ("name",)
 
 
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "slug")
     search_fields = ("name",)
     list_display_links = ("name",)
 
 
+@admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
     list_display = ("name", "slug")
     search_fields = ("name",)
     list_display_links = ("name",)
 
 
-class GenreTitleAdmin(admin.ModelAdmin):
-    list_display = ("title", "genre",)
-    search_fields = ("title", "genre",)
-    list_display_links = ("title", "genre",)
-
-
+@admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "text", "score", "pub_date")
     search_fields = ("title", "author")
     list_display_links = ("title",)
 
 
-admin.site.register(Comment, CommentAdmin)
-admin.site.register(Title, TitleAdmin)
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(Genre, GenreAdmin)
-admin.site.register(GenreTitle, GenreTitleAdmin)
-admin.site.register(Review, ReviewAdmin)
 admin.site.empty_value_display = "Не задано"
