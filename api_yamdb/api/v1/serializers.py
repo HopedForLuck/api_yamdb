@@ -1,6 +1,7 @@
 from rest_framework import serializers
+
 from reviews.models import (Category, Comment, Genre, Review, Title,
-                            my_year_validator)
+                            year_validator)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -44,7 +45,7 @@ class TitleNotSafeSerializer(serializers.ModelSerializer):
         queryset=Category.objects.all()
     )
     year = serializers.IntegerField(
-        validators=[my_year_validator]
+        validators=[year_validator]
     )
 
     class Meta:

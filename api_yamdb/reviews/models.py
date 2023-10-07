@@ -12,7 +12,7 @@ LENGTH_NAME = 256
 LENGTH_SLUG = 50
 
 
-def my_year_validator(value):
+def year_validator(value):
     if value < 0 or value > timezone.now().year:
         raise ValidationError(
             '%(value)s is not a correcrt year!',
@@ -24,7 +24,7 @@ def current_year():
     return timezone.now().year
 
 
-class CommonClass(models.Model):
+class NameSlugClass(models.Model):
     """Вспомогательный класс с общими полями для моделей Genre и Category"""
 
     name = models.CharField(
@@ -43,7 +43,7 @@ class CommonClass(models.Model):
     )
 
 
-class Category(CommonClass):
+class Category(NameSlugClass):
     """Класс категорий."""
 
     class Meta:
@@ -55,7 +55,7 @@ class Category(CommonClass):
         return self.name
 
 
-class Genre(CommonClass):
+class Genre(NameSlugClass):
     """Класс жанров."""
 
     class Meta:
@@ -77,7 +77,7 @@ class Title(models.Model):
     )
     year = models.PositiveIntegerField(
         verbose_name='Год выхода',
-        validators=[my_year_validator],
+        validators=[year_validator],
         db_index=True
     )
     description = models.TextField(

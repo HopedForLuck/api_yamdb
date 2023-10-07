@@ -15,7 +15,7 @@ from users.models import LENGTH_USERNAME, LENGTH_EMAIL
 User = get_user_model()
 
 
-class MetaMixin(serializers.ModelSerializer):
+class UserMetaMixin(serializers.ModelSerializer):
 
     class Meta:
         fields = (
@@ -69,13 +69,11 @@ class SignUpSerializer(serializers.Serializer):
             user.save()
             self.send_email(email=email, code=code)
             return validated_data
-        else:
-            if User.objects.filter(email=email).exists():
-                raise ValidationError("Этот адрес уже занят!")
-            validated_data['confirmation_code'] = code
-            self.send_email(email=email, code=code)
-
-            return User.objects.create(**validated_data)
+        elif User.objects.filter(email=email).exists():
+            raise ValidationError("Этот адрес уже занят!")
+        validated_data['confirmation_code'] = code
+        self.send_email(email=email, code=code)
+        return User.objects.create(**validated_data)
 
 
 class TokenSerializer(TokenObtainSerializer):
@@ -97,11 +95,11 @@ class TokenSerializer(TokenObtainSerializer):
         return {"token": data}
 
 
-class UserSerializer(MetaMixin):
+class UserSerializer(UserMetaMixin):
     pass
 
 
-class MeSerializer(MetaMixin):
+class MeSerializer(UserMetaMixin):
 
-    class Meta(MetaMixin.Meta):
+    class Meta(UserMetaMixin.Meta):
         read_only_fields = ("role",)

@@ -1,13 +1,13 @@
 from django.urls import include, path
 
-from users.views import (
-    UsersViewSet, SignUpViewSet,
-    GetTokenViewSet, MeProfileViewSet
-)
 from api.v1.routers import GetPostPathDeleteRouter
 from api.v1.views import (
     CategoryViewSet, GenreViewSet,
     TitleViewSet, CommentViewSet, ReviewViewSet
+)
+from users.views import (
+    UsersViewSet, SignUpViewSet,
+    GetTokenViewSet, MeProfileViewSet
 )
 
 router = GetPostPathDeleteRouter()
