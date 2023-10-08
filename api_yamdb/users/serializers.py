@@ -10,33 +10,17 @@ from django.core.mail import send_mail
 from api_yamdb.settings import EMAIL_ADMIN
 from users.models import LENGTH_USERNAME, LENGTH_EMAIL
 from django.core.validators import RegexValidator
-from rest_framework.response import Response
-from rest_framework import status
 
 User = get_user_model()
 
 
-class MetaMixin(serializers.ModelSerializer):
+class UserMixin(serializers.ModelSerializer):
 
     class Meta:
         fields = (
             "username", "email", "first_name", "last_name", "bio", "role",
         )
         model = User
-
-
-# class SignUpSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = User
-#         fields = ("username", "email")
-
-#     def validate_username(self, username):
-#         if username == "me":
-#             raise serializers.ValidationError(
-#                 'Запрещено имя "me", придумайте другое имя!'
-#             )
-#         return username
 
 
 class SignUpSerializer(serializers.Serializer):
@@ -89,13 +73,12 @@ class SignUpSerializer(serializers.Serializer):
             user.save()
             self.send_email(email=email, code=code)
             return validated_data
-        else:
-            if User.objects.filter(email=email).exists():
-                raise ValidationError("Этот адрес уже занят!")
-            validated_data['confirmation_code'] = code
-            self.send_email(email=email, code=code)
+        elif User.objects.filter(email=email).exists():
+            raise ValidationError("Этот адрес уже занят!")
+        validated_data['confirmation_code'] = code
+        self.send_email(email=email, code=code)
 
-            return User.objects.create(**validated_data)
+        return User.objects.create(**validated_data)
 
 
 class TokenSerializer(TokenObtainSerializer):
@@ -117,11 +100,11 @@ class TokenSerializer(TokenObtainSerializer):
         return {"token": data}
 
 
-class UserSerializer(MetaMixin):
+class UserSerializer(UserMixin):
     pass
 
 
-class MeSerializer(MetaMixin):
+class MeSerializer(UserMixin):
 
-    class Meta(MetaMixin.Meta):
+    class Meta(UserMixin.Meta):
         read_only_fields = ("role",)
